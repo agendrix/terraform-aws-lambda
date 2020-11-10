@@ -1,6 +1,6 @@
-# Terraform AWS Lambda Template Repository
+# Terraform AWS Lambda
 
-_Template repository for creating a TypeScript AWS Lambda with Terraform_
+_Template repository for creating a TypeScript AWS lambda function with Terraform_
 
 ![Release](https://github.com/agendrix/terraform-aws-lambda/workflows/Release/badge.svg) ![Tests](https://github.com/agendrix/terraform-aws-lambda/workflows/Tests/badge.svg?branch=main)
 
