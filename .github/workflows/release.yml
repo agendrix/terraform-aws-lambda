@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+env:
+  UPLOAD_LAMBDA: false
+
 jobs:
   test:
     name: Test lambda function
@@ -21,6 +24,7 @@ jobs:
   build-and-upload:
     name: Build GitHub action and AWS lambda function
     needs: test
+    if: UPLOAD_LAMBDA == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -48,6 +52,7 @@ jobs:
   test-new-version:
     name: Test uploaded lambda
     needs: build
+    if: UPLOAD_LAMBDA == 'true'
     runs-on: ubuntu-latest
 
     steps:
