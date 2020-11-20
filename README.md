@@ -21,12 +21,15 @@ See [Resource: aws_lambda_function](https://registry.terraform.io/providers/hash
 In order to be able to receive http requests to the lambda, you will need to hook it up with an AWS API Gateway.
 You can do so by following this guide: [Serverless Applications with AWS Lambda and API Gateway](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway).
 
+After applying the terraform plan, a dummy lambda will be available in the [AWS Lambda Console](https://console.aws.amazon.com/lambda/).
+
+## Deploying a new version of the lambda
+
+- Make sure you have all the required [GitHub Actions secrets](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets) for [`.github/workflows/release.yml`](.github/workflows/release.yml) to work.
+- Follow [CONTRIBUTING.md / Publish a new release](./CONTRIBUTING.md#publish-a-new-release) for deploying a new release.
+
 ---
 
 Your AWS lambda should now be available at https://console.aws.amazon.com/lambda/.
 
 Logs from the lambda will be available in AWS CloudWatch `/aws/lambda/${yourLambdaName}` log group.
-
-## Release a new version of the Terraform module
-
-See the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more info.
