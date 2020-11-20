@@ -1,5 +1,6 @@
-import { APIGatewayEvent, APIGatewayProxyStructuredResultV2, Handler } from "aws-lambda";
+import { APIGatewayEvent, APIGatewayProxyStructuredResultV2 } from "aws-lambda";
 import AWS from "aws-sdk";
+import { Handler } from "./types";
 
 const handler: Handler<APIGatewayEvent, APIGatewayProxyStructuredResultV2> = async (event, context) => {
   const s3 = new AWS.S3();
@@ -14,7 +15,7 @@ const handler: Handler<APIGatewayEvent, APIGatewayProxyStructuredResultV2> = asy
   return {
     statusCode: 200,
     body: JSON.stringify(data),
-    headers: { "Content-Type": "text/html; charset=utf-8" },
+    headers: { "content-type": "application/json" },
     isBase64Encoded: false,
   };
 };

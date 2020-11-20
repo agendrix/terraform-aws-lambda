@@ -34,19 +34,6 @@ jobs:
         env:
           AWS_DEFAULT_REGION: ca-central-1 # https://github.com/hashicorp/terraform/issues/21408#issuecomment-495746582
 
-  build:
-    name: Build lambda function
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build lambda distribution
-        run: yarn dist
-
   test:
     name: Test lambda function
     runs-on: ubuntu-latest
@@ -59,3 +46,16 @@ jobs:
 
       - name: Test
         run: yarn test
+
+  build:
+    name: Build lambda function
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build lambda distribution
+        run: yarn dist

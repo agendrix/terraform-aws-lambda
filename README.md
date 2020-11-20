@@ -10,7 +10,7 @@ Add the module to your [Terraform](https://www.terraform.io/) project:
 
 ```terraform
 module "terraform_aws_lambda" {
-  source      = "git@github.com:agendrix/terraform-aws-lambda.git//terraform?ref=v0.1.0"
+  source      = "git@github.com:agendrix/terraform-aws-lambda.git//terraform?ref=v0.2.0"
   lambda_name = "my-typescript-lambda"
   role_arn    = aws_iam_role.iam_for_lambda.role_arn
 }

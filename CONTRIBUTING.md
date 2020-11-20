@@ -2,10 +2,9 @@
 
 ## Publish a new release
 
+- Bump [`package.json`](./package.json) version (ie.: 1.0.0)
 - Create a new release (ie.: v1.0.0)
-- Check `This is a pre-release`
-- A GitHub workflow will run and build the code and update the release.
-- Once the build is completed, publish the release.
+- A GitHub workflow will automatically run, build and upload the new code to AWS Lambda.
 
 ## Testing
 

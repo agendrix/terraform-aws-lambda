@@ -2,54 +2,61 @@ name: Release
 
 on:
   release:
-    types: [prereleased, edited]
+    types: [published]
 
 jobs:
-  build:
-    name: Build GitHub action and AWS lambda function
+  test:
+    name: Test lambda function
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: "main"
 
       - name: Install dependencies
         run: yarn install
 
-      - name: Get release tag
-        id: ref
-        run: |
-          TAG=${REF#"$PREFIX"}
-          echo "::set-output name=tag::$TAG"
-        env:
-          REF: ${{ github.ref }}
-          PREFIX: "refs/tags/"
+      - name: Test
+        run: yarn test
 
-      - name: Update package.json version
-        run: |
-          tmp=$(mktemp)
-          VERSION=${TAG#"v"}
-          jq ".version = \"$VERSION\"" package.json > "$tmp"
-          mv "$tmp" package.json
-        env:
-          TAG: ${{ steps.ref.outputs.tag }}
+  build-and-upload:
+    name: Build GitHub action and AWS lambda function
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install
 
       - name: Build lambda distribution
         run: yarn dist
 
-      - name: Setup GitHub git user
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Push build
+      - name: Upload new build to AWS lambda
         run: |
-          git add package.json ping-slack/dist/index.js terraform/lambda.zip
-          git commit -m "Build app for release"
-          git push
+          aws lambda update-function-code --function-name "$FUNCTION_ARN" --zip-file "fileb://$(pwd)/out/lambda.zip"
+        env:
+          FUNCTION_ARN: ${{ secrets.LAMBDA_FUNCTION_ARN }}
 
-      - name: Move release tag to latest commit
-        run: |
-          git tag --force "${{ steps.ref.outputs.tag }}" $(git rev-parse HEAD)
-          git push --force --tags
+  test-new-version:
+    name: Test uploaded lambda
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Integration tests
+        run: yarn test
+        env:
+          LAMBDA_URL: ${{ secrets.LAMBDA_URL }}

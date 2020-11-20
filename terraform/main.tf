@@ -1,20 +1,23 @@
-locals {
-  zip_path = "${path.module}/lambda.zip"
+data "archive_file" "dummy" {
+  type        = "zip"
+  output_path = "${path.module}/.terraform/dummy_lambda.zip"
+
+  source {
+    content  = "hello"
+    filename = "dummy.txt"
+  }
 }
 
 resource "aws_lambda_function" "lambda" {
-  filename      = local.zip_path
+  filename      = data.archive_file.dummy.output_path
   function_name = var.lambda_name
   role          = var.role_arn
   handler       = "index.handler"
 
-  source_code_hash = filebase64sha256(local.zip_path)
+  timeout     = var.timeout
+  memory_size = var.memory_size
 
   runtime = "nodejs12.x"
-
-  environment {
-    variables = {}
-  }
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
