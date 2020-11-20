@@ -24,7 +24,7 @@ jobs:
   build-and-upload:
     name: Build GitHub action and AWS lambda function
     needs: test
-    if: UPLOAD_LAMBDA == 'true'
+    if: "false" # To be removed
     runs-on: ubuntu-latest
 
     steps:
@@ -51,8 +51,8 @@ jobs:
 
   test-new-version:
     name: Test uploaded lambda
-    needs: build
-    if: UPLOAD_LAMBDA == 'true'
+    needs: build-and-upload
+    if: "false" # To be removed
     runs-on: ubuntu-latest
 
     steps:
