@@ -29,8 +29,11 @@ jobs:
       - name: Update package.json version
         run: |
           tmp=$(mktemp)
-          jq '.version = "${{ steps.ref.outputs.tag }}"' package.json > "$tmp"
+          VERSION=${TAG#"v"}
+          jq ".version = \"$VERSION\"" package.json > "$tmp"
           mv "$tmp" package.json
+        env:
+          TAG: ${{ steps.ref.outputs.tag }}
 
       - name: Build lambda distribution
         run: yarn dist
